@@ -15,16 +15,17 @@ Specifications
   - Second is an estimate of effort.  We recommend using a power of 2 for number of hours, ie. 0 = 1 hour and 1 = 2 hours and 2 = 4 hours; note that 9 is basically 3 full-time months, too large to get a good estimate and should be broken down before being worked on.
   - Then comes the description.
   - That's basically enough to get started (and it covers the majority of my use cases).  How's that for a simple intro?
-  - A nested list for tasks that are part of the current task.
-    - Verbosely, the `!hasparts` tag marks tasks may be nested to show sub-tasks (which all must be done before the parent is considered finished).
-      - The `!ispartof` tag is the reverse of `!hasparts` relationship
+  - A nested list for tasks that are part of the current task (which all must be done before the parent is considered finished).
+    - To be verbose, use a `!hasparts` key.
+      - If the parser throws an error, just use `hasparts`.  Same goes for all these other custom tags.
+      - The `!ispartof` tag is the reverse of the `!hasparts` relationship.
   - The `!blocks` tag marks tasks that cannot begin until that task is finished.
-    - The `!awaits` tag is the reverse of `!blocks` relationship
+    - The `!awaits` tag is the reverse of the `!blocks` relationship.
   - If sharing, a name can show the person who is interested or assigned, and we like `@` for this.  (That conflicts with the todotxt.org convention for a context so we'll have to see how hard we want to fight that battle.)
   - Add any other feature from todotxt.org.
     - `+` can mark a project, eg. `+home` or `+yard` or `+family-reunion`.
-    - `@` can mark a context though we like `#`, eg. `#home` or `#in-the-city` or `#family-reunion-2020`.  (todotxt.org standard is `@`.)
-    - `x` can mark it done, if you want to keep it in the list.  (todotxt.org puts it on the front, which is fine if you're comfortable with alignment being off.  Use it, or move your task to the bottom, or delete it... whatever looks good to you).
+    - `@` can mark a context, though we prefer `#`, eg. `#home` or `#in-the-city` or `#family-reunion-2020`.  (todotxt.org standard is `@`.)
+    - `x` can mark a task done, if you want to keep it in the list.  (todotxt.org puts it on the front, which is fine if you're comfortable with alignment being off.  Use it, or move your task to the bottom, or delete it... whatever looks good to you).
     - `<key>:<value` adds other data that may help, eg. `created:2020-05-24`, `due:2020-05-31`, `repeats:monthly`
 - For sharing or juggling multiple task lists, start the file with URIs.
   - This might not be a URL, and in such a case would need an external source to map to a location(s).
@@ -32,30 +33,29 @@ Specifications
 Example 1
 
 ```
----
 - 98 1 install helmet
-- &instruction
-  75 1 add install instructions to README.md
-- 90 0 install SSL:
-  - 77 0 save to publicly hosted git
-  - *instruction 
 - 85 3 convert to UUIDs
 - 80 1 create a link to the specific claim
+- &instruction
+  75 1 add install instructions to README.md
+- 80 0 install SSL:
+  - 77 0 save to publicly hosted git
+  - *instruction 
 ```
 
 Explanation of Example 1
 
 - Line 1 shows a task of priority 98 and estimation of 2 hours and 1 hour.
-- Lines 2 & 3 show a named tasks of priority 90 and estimation of 1 hour.
+- Lines 2 & 3 show a named task of priority 90 and estimation of 1 hour.
 - The "install SSL" task has other tasks as part of it.  Note that this requires a ":" (colon) after the task description.
   - Inside that task a reference to the one with ID "instruction" (found earlier as `&instruction`).
 
 Example 2, adding globally unique references
 
 ```
-%TAG ! tag:taskyaml.org/schema,2020:
-%TAG !group! tag:9d9bc93b-01f3-4efd-b003-36ec53f33d3b.prosperity-group,2020:tasks
---- !<tag:ee461452-d91c-42ff-9651-19a35e385037.trent.prosperity-todo,2020:tasks>
+%TAG ! tag:taskyaml.org,2020:schema
+%TAG !group! tag:9d9bc93b-01f3-4efd-b003-36ec53f33d3b.prosperity-group,2020:/tasks.yml
+--- !<tag:ee461452-d91c-42ff-9651-19a35e385037.trent.prosperity-todo,2020:/tasks.yml>
 - 98 1 install helmet
 - &instruction
   75 1 add install instructions to README.md
@@ -77,7 +77,7 @@ Explanation of Example 2
 - The second line declares a tag `group` that refers to the globally unique URI for another set of tasks which will be referenced, specifically for the "prosperity group".  See another example [here](https://yaml.org/spec/1.2/spec.html#id2782457).
 - The third line starts this document and declares a default tag for it which will serve as a globally unique identifier.
 See another example [here](https://yaml.org/spec/1.2/spec.html#id2761803).
-- The "install SSL" tells that the second task "blocks" (and therefore must be done before) the tasks inside it (ie. in the sublist).
+- The "install SSL" contains a list of tasks it "blocks" (and therefore must be done before) the tasks inside it (ie. in the sublist).  It also contains a list of tasks that it has as parts.
 - The last task is marked with `!group` to say that it's part of the set of tasks from the first line, and it's found with an ID of "publicize" in that set.
 
 
@@ -92,13 +92,4 @@ Notes
 
 - I'd actually prefer to have the references (eg. "instruction" in the example) NOT at the beginning of the node because they clutter the UI, but the YAML anchors really seem to be a good fit for this.  (An alternative is a custom key-value, eg `id:stuff` in the task.  Both are ugly.)
 
-Remaining Task List for This Project
-```
---- !<tag:taskyaml.org/tasks,2020>
-- 70 2 parse & model in JSON
-  - !blocks
-    - 50 4 show graphical dependencies
-- &calc-time
-  - 60 4 calculate time before finishing, a la https://github.com/trentlarson/Schedule-Forecast
-- 60 2 add teams (related to *calc-time )
-```
+See [the tasks for improving this spec & tooling](https://taskyaml.org/.well-known/tasks.yml).
