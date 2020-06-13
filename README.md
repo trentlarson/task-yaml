@@ -92,4 +92,4 @@ Notes
 
 - I'd actually prefer to have the references (eg. "instruction" in the example) NOT at the beginning of the node because they clutter the UI, but the YAML anchors really seem to be a good fit for this.  (An alternative is a custom key-value, eg `id:stuff` in the task.  Both are ugly.)
 
-See [the tasks for improving this spec & tooling](https://taskyaml.org/.well-known/tasks.yml).
+See [the tasks for improving this spec & tooling](tasks.yml).

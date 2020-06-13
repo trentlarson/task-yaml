@@ -1,0 +1,12 @@
+%TAG ! tag:taskyaml.org,2020:schema
+--- !<tag:taskyaml.org,2020:/.well-known/tasks.yml>
+- 70 2 parse & model in JSON:
+  - 50 4 show graphical dependencies
+- &calc-time
+  60 4 calculate time before finishing, a la https://github.com/trentlarson/Schedule-Forecast
+- 60 2 add assignments (related to *calc-time )
+- 55 2 add team assignments (related to *calc-time )
+- 51 4 Document this spec as well as others; maybe as simple as dnt-policy.txt https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml
+- 50 1 Apply for .well-known/tasks.yml https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml
+  - !blocks
+    - 50 4 show graphical dependencies
