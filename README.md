@@ -3,9 +3,11 @@
 This defines a standard for a concise task list for priorities and estimates, where users can:
 - create and edit with easy-to-use tools (ie. a text editor)
 - sort and do basic calculations manually or with programs
-- represent basic dependency concepts -- namely, children/subtasks and blocking tasks
-- share lists
-- migrate to a more feature-rich or UI-rich tool when maturity and workflows require it
+- represent basic dependency concepts -- namely, subtasks and blocking (ie. synchronously preceding) tasks
+- share lists publicly or privately
+- incrementally migrate to a more (or less) expressive schema
+- migrate to a more (or less) feature-rich and/or UI-rich toolset
+
 
 Specifications
 
