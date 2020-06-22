@@ -1,5 +1,6 @@
 %TAG ! tag:taskyaml.org,2020:schema
 --- !<tag:taskyaml.org,2020:/.well-known/tasks.yml>
+- 90 0 fix improper use of references (use DIDs & remove &/* references)
 - 70 2 parse & model in JSON:
   - 50 4 show graphical dependencies
 - &calc-time
