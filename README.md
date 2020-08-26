@@ -11,78 +11,76 @@ This defines a standard for a concise task list for priorities and estimates, wh
 
 Specifications
 
-- Format in YAML.
-- For each task:
-  - First is a priority number.  The higher the number the higher the priority.
-  - Second is an estimate of effort.  We recommend using a power of 2 for number of hours, ie. 0 = 1 hour and 1 = 2 hours and 2 = 4 hours; note that 9 is basically 3 full-time months, too large to get a good estimate and should be broken down before being worked on.
-  - Then comes the description.
-  - That's basically enough to get started (and it covers the majority of my use cases).  How's that for a simple intro?
-  - A nested list for tasks that are part of the current task (which all must be done before the parent is considered finished).
-    - To be verbose, use a `!hasparts` key.
-      - If the parser throws an error, just use `hasparts`.  Same goes for all these other custom tags.
-      - The `!ispartof` tag is the reverse of the `!hasparts` relationship.
-  - The `!blocks` tag marks tasks that cannot begin until that task is finished.
-    - The `!awaits` tag is the reverse of the `!blocks` relationship.
-  - If sharing, a name can show the person who is interested or assigned, and we like `@` for this.  (That conflicts with the todotxt.org convention for a context so we'll have to see how hard we want to fight that battle.)
-  - Add any other feature from todotxt.org.
+- Format in [YAML](https://yaml.org/).
+- Each task is in a list, with each line beginning with `-`.
+  - A priority number is first.
+    - The higher the number, the higher the priority.
+    - Lists often start without any organization, so this is optional: if missing, it has the same priority as the previous task; if this is the first task then the priority is 99.
+  - An estimate number comes next.
+    - We recommend using a power of 2 for number of hours, ie. 0 = 1 hour and 1 = 2 hours and 2 = 4 hours; note that 9 is basically 3 full-time months, too large to get a good estimate and should be broken down before being worked on.  Smaller increments could be negative, ie. -1 = 30 mins and -2 = 15 minutes.
+  - The description is all the rest of the line.
+  - That's enough to get started (and it covers the majority of my use cases).  How's that for a simple intro?
+  - Add any other feature from [Todo.txt](http://todotxt.org/).
     - `+` can mark a project, eg. `+home` or `+yard` or `+family-reunion`.
-    - `@` can mark a context, though we prefer `#`, eg. `#home` or `#in-the-city` or `#family-reunion-2020`.  (todotxt.org standard is `@`.)
-    - `x` can mark a task done, if you want to keep it in the list.  (todotxt.org puts it on the front, which is fine if you're comfortable with alignment being off.  Use it, or move your task to the bottom, or delete it... whatever looks good to you).
-    - `<key>:<value` adds other data that may help, eg. `created:2020-05-24`, `due:2020-05-31`, `repeats:monthly`
+    - `@` can mark a context, eg. `@home` or `@in-the-city` or `@family-reunion-2020`.
+    - `x` can mark a task done, if you want to keep it in the list.  (todotxt.org puts it on the front but that throws off the alignment.  Use `x`, or move your task to the bottom, or just do what I do and delete the thing... whatever works for you).
+    - `<label>:<value` adds other data, eg. `created:2020-05-24`, `due:2020-05-31`, `repeats:monthly`, `id:#implement-ids`, `assignee:did:peer:abc123`, `interested:did:sovrin:321cba`
+  - Subtasks (ie. parts of the current task) are created with a nested list, where the parent task line ends with a `:` and the subtasks follow in an indented task list.
+    - Alternatively, use a `sub` label with the value of an `id` for another task.
+      - The `super` label is the reverse of the `sub` relationship.
+  - Dependent tasks are created with a `blocks` label.  (These are tasks that cannot begin until the current one is finished.)
+    - The `awaits` label is the reverse of the `blocks` relationship.
+  - To point to the same task in another project or task list, use the label `copy`.
+  - If you've gotten this far, it's about time to consider migrating to a full-blown DB.  The lists are getting very verbose and hard to read and manage, doncha think?
 - For sharing or juggling multiple task lists, start the file with URIs.
-  - This might not be a URL, and in such a case would need an external source to map to a location(s).
+  - This might not be a URL, and in such a case would need an external source to map to a location(s), eg. "Local Data" in [Distributed Task Lists](https://github.com/trentlarson/distributed-task-lists).
 
 Example 1
 
 ```
 - 98 1 install helmet
-- 85 3 convert to UUIDs
-- 80 1 create a link to the specific claim
-- &instruction
-  75 1 add install instructions to README.md
+- 85 3 convert to UUIDs id:#convert
+- 75 1 add install instructions to README.md id:#uninstall
 - 80 0 install SSL:
-  - 77 0 save to publicly hosted git
-  - *instruction 
+  - 77 0 save to publicly hosted git blocks:#uninstall
 ```
 
 Explanation of Example 1
 
-- Line 1 shows a task of priority 98 and estimation of 2 hours and 1 hour.
-- Lines 2 & 3 show a named task of priority 90 and estimation of 1 hour.
-- The "install SSL" task has other tasks as part of it.  Note that this requires a ":" (colon) after the task description.
-  - Inside that task a reference to the one with ID "instruction" (found earlier as `&instruction`).
+- Line 1 shows a task of priority 98 and estimation of 2 hours.
+- Line 2 shows a task with id `#convert` of priority 85 and estimation of 8 hours.
+- The "install SSL" task has other tasks as part of it.
+  - Inside the subtask is a reference to the one with label `id` and value "#uninstall".
 
 Example 2, adding globally unique references
 
 ```
 %TAG ! tag:taskyaml.org,2020:schema
-%TAG !group! tag:9d9bc93b-01f3-4efd-b003-36ec53f33d3b.prosperity-group,2020:/tasks.yml
+%TAG !council! tag:9d9bc93b-01f3-4efd-b003-36ec53f33d3b.prosperity-council,2020:/tasks.yml
 --- !<tag:ee461452-d91c-42ff-9651-19a35e385037.trent.prosperity-todo,2020:/tasks.yml>
 - 98 1 install helmet
-- &instruction
-  75 1 add install instructions to README.md
+- 75 1 add install instructions to README.md id:#instruction
 - 90 0 install SSL:
-  - !blocks
+  - blocks:
     - 77 0 save to publicly hosted git
-  - *instruction
-  - !hasparts
-    80 2 install haproxy
+  - sub:
+    - 80 2 install haproxy
 - 85 3 convert to UUIDs
 - 80 1 create a link to the specific claim
-- !group!#publicize
-  70 2 reserve a domain
+- copy:!council!#publicize:
+  - 70 2 reserve a domain
 ```
 
 Explanation of Example 2
 
-- The first line declares a `!` tag for the taskyaml.org schema.
-- The second line declares a tag `group` that refers to the globally unique URI for another set of tasks which will be referenced, specifically for the "prosperity group".  See another example [here](https://yaml.org/spec/1.2/spec.html#id2782457).
-- The third line starts this document and declares a default tag for it which will serve as a globally unique identifier.
-See another example [here](https://yaml.org/spec/1.2/spec.html#id2761803).
-- The "install SSL" contains a list of tasks it "blocks" (and therefore must be done before) the tasks inside it (ie. in the sublist).  It also contains a list of tasks that it has as parts.
-- The last task is marked with `!group` to say that it's part of the set of tasks from the first line, and it's found with an ID of "publicize" in that set.
+- The first line declares a `!` primary tag handle for the taskyaml.org schema.
+- The second line declares a named tag handle `council` that refers to the globally unique URI for another set of tasks which will be referenced, specifically for the "prosperity-council".  See [an example from the spec here](https://yaml.org/spec/1.2/spec.html#id2783195).
+- The third line starts this document (with `---`) and declares a default tag for it which will serve as a globally unique identifier.
+See [an example from the spec here](https://yaml.org/spec/1.2/spec.html#id2761803).
+- The "install SSL" contains a list of tasks it "blocks" as well as the "sub" tasks inside it.
+- The last task is marked with `!council!` to say that it's part of the set of tasks from the `%TAG !council` line, and it's found with an ID of "#publicize" in that set.
 
-
+I recognize that this use of tags isn't the intended use from the spec; those examples (and all parsers I've found) require the tag references in the document to be the first thing on the line.  I wish it would expand anywhere within the line, so I hope this type of use catches on (with the recognition that it complicates the parsers).
 
 Related Projects
 
@@ -91,7 +89,5 @@ http://todotxt.org/ (... [introducted by the founder of LifeHacker in 2006](http
 - One thing todotxt.org got wrong is putting too much variability on the front, so it's tougher to quickly parse out the description.  They also don't put the size of the task front-and-center, so it's harder to see relative sizes of tasks (though they've got a good point that the next item on each project should always be a small task).
 
 Notes
-
-- I'd actually prefer to have the references (eg. "instruction" in the example) NOT at the beginning of the node because they clutter the UI, but the YAML anchors really seem to be a good fit for this.  (An alternative is a custom key-value, eg `id:stuff` in the task.  Both are ugly.)
 
 See [the tasks for improving this spec & tooling](tasks.yml).
