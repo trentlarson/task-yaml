@@ -18,37 +18,42 @@ Tools should allow users to accomplish the following:
 ## Specifications
 
 - Format in [YAML](https://yaml.org/).
+- Optionally, start the file with a "tasks:" line.  This is important when the file contains other info (eg. a "log").
 - Each task is in a list, with each line beginning with `-`.
-  - Optionally, prepend with an "issues:" line.  This is important when the file contains other info (eg. "project" or "log").
   - A priority number is first, but optional.
     - The higher the number, the higher should be the priority.
-    - Lists often start without any organization, so this is optional: if missing, it has a priority just below the previous task; if this is the first task then the priority is the length of the list.
+    - Lists often start without any organization, so this is optional.  If missing, it has a priority just below the previous task.  (The top task has top priority, which could be the length of the list or 99... it's currently unspecified.)
   - An estimate number comes next.
-    - We recommend using a power of 2 for number of hours, ie. 0 = 1 hour and 1 = 2 hours and 2 = 4 hours; note that 9 is basically 3 full-time months, too large to get a good estimate and should be broken down before being worked on.  Smaller increments could be negative, ie. -1 = 30 mins and -2 = 15 minutes.
+    - I recommend using a power of 2 for number of hours, ie. 0 = 1 hour and 1 = 2 hours and 2 = 4 hours; note that 9 is basically 3 full-time months, too large to get a good estimate and should be broken down before being worked on.  Smaller increments could be negative, ie. -1 = 30 mins and -2 = 15 minutes.
     - This, too, is optional, but if there is only one number then it is the estimate.
- - The description is all the rest of the line.
+  - The description is all the rest of the line.
   - That's enough to get started (and it covers the majority of my use cases).  How's that for a simple intro?
-  - Add any other feature from [Todo.txt](http://todotxt.org/).
-    - `+` can mark a project, eg. `+home` or `+yard` or `+family-reunion`.
-      - This should be treated as an ID.  Tools may wish to show a project in the same list, together with the tasks, since a project is just a long-running task, eh.
-    - `@` can mark a context, eg. `@home` or `@in-the-city` or `@family-reunion-2020`.
-    - `x` can mark a task done, if you want to keep it in the list.  (todotxt.org puts it on the front but that throws off the alignment.  Use `x`, or move your task to the bottom, or just do what I do and delete the thing... whatever works).
-    - `<label>:<value` adds other data, eg. `created:2020-05-24`, `due:2020-05-31`, `repeats:monthly`, `id:#implement-ids`, `assignee:did:peer:abc123`, `interested:did:sovrin:321cba`
   - Subtasks (ie. parts of the current task) are created with a nested list, where the parent task line ends with a `:` and the subtasks follow in an indented task list (yes, always a list).
-    - Alternatively, use a `subtasks` key with the value being the list of tasks (somtimes expressed as `id:ID-OF-OTHER`).
-      - The `supertasks` key shows the reverse of the `subtasks` relationship.  Note that this should be a list.
+    - Alternatively, use a `subtasks` key with the value being the list of tasks (somtimes expressed as `id:OTHER-ID`).
+      - Under consideration: The `supertasks` key shows the reverse of the `subtasks` relationship.  Note that this should be a list.
   - Dependent tasks are created with a `blocks` key.  (These are tasks that cannot begin until the current one is finished.)  Again, this is always a list.
-    - The `awaits` key shows the reverse of the `blocks` relationship.  (Yes, a list.)
-  - To point to the same task in another project or task list, use the label `copy`.
+    - Under consideration: The `awaits` key shows the reverse of the `blocks` relationship.  (Yes, a list.)
+  - To refer to another task (even in another project), use the label `ref`.  It's best to put it as the only thing on that line, since all other details will be taken from the original task.
+  - You can add other markers from [Todo.txt](http://todotxt.org/).
+    - These features should be supported by task-yaml tools:
+      - `<label>:<value` adds other data, eg. `created:2020-05-24`, `due:2020-05-31`, `repeats:monthly`, `id:implement-ids`, `assignee:did:peer:abc123`, `interested:did:sovrin:321cba`
+        - The `id` label is commonly used as a unique identifier for tasks.
+          - Tools will expect that the value is a URI.  Global references are of the format `id:taskyaml:...#OTHER-ID`.  Local references are obviously simpler, like `id:OTHER-ID`; they are anything not parsable as a global reference, and shouldn't contain a `:` as part of the ID.
+     - Under consideration: `+` can mark a project/supertask, eg. `+home` or `+yard` or `+family-reunion`.
+        - This should be treated as the ID for that parent task/project.  Tools may wish to show a project in the same list, together with the tasks, since a project is just a long-running task, eh.
+        - in other words, this is a shortcut for `supertasks` (see above).
+    - Under consideration: Other Todo.txt features are interesting and could be useful if they look good to you.  However, they don't really have any meaning in task-yaml.
+      - `@` can mark a context, eg. `@home` or `@in-the-city` or `@family-reunion-2020`.
+      - `x` can mark a task done, if you want to keep it in the list.  (todotxt.org puts it on the front; if you do that, I recommend you move that line to the bottom of the file so that it doesn't get confusing in the middle of the rest of the list and throw off the alignment.  Use `x`, move your task to the bottom, or just do what I do and delete the thing... whatever works).
   - If you've gotten this far, it's about time to consider migrating to a full-blown DB.  The lists are getting very verbose and hard to read and manage, doncha think?
 - For sharing or juggling multiple task lists, start the file with URIs.
   - This might not be a URL, and in such a case would need an external source to map to a location(s), eg. "Local Data" in [Distributed Task Lists](https://github.com/trentlarson/distributed-task-lists).
 
 Danger - colons `:` !
 
-- If you ever are tempted to use a `:`, don't.  Just don't... do everything you can to avoid colons.  Reason being that if you ever have a colon followed by a space, YAML takes that as an object and it'll mess up the parsed results, usually with an error kind of mess-up.  Remind yourself frequently that you will only use them in two places:
-  - Surrounded by other characters, like in labels (eg. `id:#start-fire`).
-  - At the end of a task line, where the following lines are lists (eg. subtasks).
+- Be very careful about the use of `:` when starting.  Reason being that if you ever have a colon followed by a space, YAML takes that as an object and it'll mess up the parsed results if the rest of your task isn't also formatted that way.
+  - Surrounded by other characters, like in labels (eg. `id:start-fire`).
+  - At the very end of a task line, where the following lines are lists (eg. subtasks).  I recommend always putting a space before it in that case, eg ` :`; that helps solidify this rule in your mind that it's something special.
 
 
 ## Example 1
@@ -64,39 +69,41 @@ Danger - colons `:` !
 
 - The time alloted to "write" and "laundry" is 1 hour, while "groceries" and "sprinklers" are 2 hours.
 
-## Example 2
+## Example 2, with priorities and IDs and subtasks
 
 ```
 - 98 1 install helmet
-- 85 3 convert to UUIDs id:#convert
-- 75 1 add install instructions to README.md id:#uninstall
+- 85 3 convert to UUIDs id:convert
+- 75 1 add install instructions to README.md id:uninstall
 - 80 0 install SSL:
-  - 77 0 save to publicly hosted git blocks:#uninstall
+  - 77 0 save to publicly hosted git blocks:uninstall
 ```
 
 #### Explanation of Example 2
 
 - Line 1 shows a task of priority 98 and estimation of 2 hours.
-- Line 2 shows a task with id `#convert` of priority 85 and estimation of 8 hours.
+- Line 2 shows a task with id `convert` of priority 85 and estimation of 8 hours.
 - The "install SSL" task has other tasks as part of it.
-  - Inside the subtask is a reference to the one with label `id` and value "#uninstall".
+  - Inside the subtask is a reference to the one with label `id` and value "uninstall".
 
-## Example 3, adding globally unique references
+## Example 3, under consideration: shortcuts for globally unique references
+
+Note that this part is experimental: some parsers fail to parse tags as shown.
 
 ```
 %TAG ! tag:taskyaml.org,2020:schema
 %TAG !council! tag:9d9bc93b-01f3-4efd-b003-36ec53f33d3b.prosperity-council,2020:/tasks.yml
 --- !<tag:ee461452-d91c-42ff-9651-19a35e385037.trent.prosperity-todo,2020:/tasks.yml>
 - 98 1 install helmet
-- 75 1 add install instructions to README.md id:#instruction
+- 75 1 add install instructions to README.md id:instruction
 - 90 0 install SSL:
-  - blocks:
+  blocks:
     - 77 0 save to publicly hosted git
-  - sub:
+  sub:
     - 80 2 install haproxy
 - 85 3 convert to UUIDs
 - 80 1 create a link to the specific claim
-- copy:!council!#publicize:
+- id:!council!#publicize:
   - 70 2 reserve a domain
 ```
 
@@ -107,14 +114,14 @@ Danger - colons `:` !
 - The third line starts this document (with `---`) and declares a default tag for it which will serve as a globally unique identifier.
 See [an example from the spec here](https://yaml.org/spec/1.2/spec.html#id2761803).
 - The "install SSL" contains a list of tasks it "blocks" as well as the "sub" tasks inside it.
-- The last task is marked with `!council!` to say that it's part of the set of tasks from the `%TAG !council` line, and it's found with an ID of "#publicize" in that set.
-
-I recognize that this use of tags isn't the intended use from the spec; those examples (and all parsers I've found) require the tag references in the document to be the first thing on the line.  I wish it would expand anywhere within the line, so I hope this type of use catches on (with the recognition that it complicates the parsers).
+- The last task is marked with the tag of `!council!` to show that it's part of the set of tasks from the `%TAG !council` line, and it's found with an ID of "publicize" in that set.
 
 ## Related Projects
 
 http://todotxt.org/ (... [introducted by the founder of LifeHacker in 2006](https://lifehacker.com/geek-to-live-list-your-life-in-txt-166299) and [defended](https://lifehacker.com/why-i-get-more-done-with-a-plain-text-to-do-list-5743081) and [summarized simply](https://www.howtogeek.com/355890/every-to-do-list-app-sucks-switch-to-todo.txt-instead/) by others since then... yep, there's quite the rabbit-hole here)
+
 - While this is great for personal lists, I want a couple more features to enable sharing with others and do some advanced calculations such as aggregate estimations; task-yaml is more project-centric from the start.
+
 - One thing todotxt.org got wrong is putting too much variability on the front, so it's tougher to quickly parse out the description.  They also don't put the size of the task front-and-center, so it's harder to see relative sizes of tasks (though they've got a good point that the next item on each project should always be a small task).
 
 ## Miscellany
