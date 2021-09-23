@@ -51,9 +51,13 @@ Tools should allow users to accomplish the following:
 
 Danger - colons `:` !
 
-- Be very careful about the use of `:` when starting.  Reason being that if you ever have a colon followed by a space, YAML takes that as an object and it'll mess up the parsed results if the rest of your task isn't also formatted that way.
+- Don't ever put a space after `:`! (I tell myself that I always put a space before a colon if it's not `key:value` and that helps remind me that it's special.) Reason being that: if you ever have a colon followed by a space, YAML takes that as an object and it'll mess up the parsed results if the rest of your task isn't also formatted that way. It takes discipline and it's easy to forget! Here are the two cases where you can use it:
   - Surrounded by other characters, like in labels (eg. `id:start-fire`).
   - At the very end of a task line, where the following lines are lists (eg. subtasks).  I recommend always putting a space before it in that case, eg ` :`; that helps solidify this rule in your mind that it's something special.
+
+Warning - numbers!
+
+- If a task description starts with a number, it could be parsed as an estimate. (I tell myself that I never start a task description with a number and I always spell them out, eg. "Two".)
 
 
 ## Example 1
