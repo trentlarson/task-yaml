@@ -2,10 +2,11 @@
 
 This defines a standard for a concise task list for priorities and estimates.  The priorities are:
 - Make it easy to create, read, and judge next actions with only a text editor.
-  - The priority is most important; it could be an explicit number or impllicit in the order of the list.
+  - The priority is most important; this is typically impllicit in the order of the list, but some order could be helpful to show correlations across lists.
   - The estimate is most important to visualize for quick assessment of available time, so if there is only one number then this is the number to show.
   - The descriptions should line up for quick browsing.
     - Next to the estimate, the context is the most likely resource constraint so that should come first in the description.
+  - Child and dependent tasks should be clear.
 
 Tools should allow users to accomplish the following:
 - create and edit with easy-to-use tools (ie. a text editor)
@@ -24,7 +25,9 @@ Tools should allow users to accomplish the following:
     - The higher the number, the higher should be the priority.
     - Lists often start without any organization, so this is optional.  If missing, it has a priority just below the previous task.  (The top task has top priority, which could be the length of the list or 99... it's currently unspecified.)
   - An estimate number comes next.
-    - I recommend using a power of 2 for number of hours, ie. 0 = 1 hour and 1 = 2 hours and 2 = 4 hours; note that 9 is basically 3 full-time months, too large to get a good estimate and should be broken down before being worked on.  Smaller increments could be negative, ie. -1 = 30 mins and -2 = 15 minutes.
+    - This is typically a number of hours.
+      - The recommendation is to line these up by prefixing single-digit numbers with a "0" (if the range is 00-99). Sub-hour lengths are easy with decimals, so ".1" would be lowest visually appealing length; that's precisely 6 minutes... and if really care to distinguish between .1 and .3, more power to you.
+    - Another decent approach is to use a power of 2 for number of hours, ie. 0 = 1 hour and 1 = 2 hours and 2 = 4 hours; note that 9 is basically 3 full-time months, too large to get a good estimate and should be broken down before being worked on. Smaller increments could be negative, ie. -1 = 30 mins and -2 = 15 minutes. But we recognize that most non-computer-scientists would find this hard to translate.
     - This, too, is optional, but if there is only one number then it is the estimate.
   - The description is all the rest of the line.
   - That's enough to get started (and it covers the majority of my use cases).  How's that for a simple intro?
@@ -44,7 +47,7 @@ Tools should allow users to accomplish the following:
         - in other words, this is a shortcut for `supertasks` (see above).
     - Under consideration: Other Todo.txt features are interesting and could be useful if they look good to you.  However, they don't really have any meaning in task-yaml.
       - `@` can mark a context, eg. `@home` or `@in-the-city` or `@family-reunion-2020`.
-      - `x` can mark a task done, if you want to keep it in the list.  (todotxt.org puts it on the front; if you do that, I recommend you move that line to the bottom of the file so that it doesn't get confusing in the middle of the rest of the list and throw off the alignment.  Use `x`, move your task to the bottom, or just do what I do and delete the thing... whatever works).
+      - `x` can mark a task done, if you want to keep it in the list.  (todotxt.org puts it on the front; if you do that, the recommendation is to move that line to the bottom of the file so that it doesn't get confusing in the middle of the rest of the list and throw off the alignment.  Use `x`, move your task to the bottom, or just do what I do and delete the thing... whatever works).
   - If you've gotten this far, it's about time to consider migrating to a full-blown DB.  The lists are getting very verbose and hard to read and manage, doncha think?
 - For sharing or juggling multiple task lists, start the file with URIs.
   - This might not be a URL, and in such a case would need an external source to map to a location(s), eg. "Local Data" in [Distributed Task Lists](https://github.com/trentlarson/distributed-task-lists).
@@ -53,7 +56,7 @@ Danger - colons `:` !
 
 - Don't ever put a space after `:`! (I tell myself that I always put a space before a colon if it's not `key:value` and that helps remind me that it's special.) Reason being that: if you ever have a colon followed by a space, YAML takes that as an object and it'll mess up the parsed results if the rest of your task isn't also formatted that way. It takes discipline and it's easy to forget! Here are the two cases where you can use it:
   - Surrounded by other characters, like in labels (eg. `id:start-fire`).
-  - At the very end of a task line, where the following lines are lists (eg. subtasks).  I recommend always putting a space before it in that case, eg ` :`; that helps solidify this rule in your mind that it's something special.
+  - At the very end of a task line, where the following lines are lists (eg. subtasks).  The recommendation is always to put a space before it in that case, eg ` :`; that helps solidify this rule in your mind that it's something special.
 
 Warning - numbers!
 
@@ -129,6 +132,8 @@ http://todotxt.org/ (... [introducted by the founder of LifeHacker in 2006](http
 - One thing todotxt.org got wrong is putting too much variability on the front, so it's tougher to quickly parse out the description.  They also don't put the size of the task front-and-center, so it's harder to see relative sizes of tasks (though they've got a good point that the next item on each project should always be a small task).
 
 ## Miscellany
+
+Inside a list, a specific priority number is not terribly useful and the order of tasks works well. Numbers might be useful to indicate a grouping, for example if there are a few very high priority issues followed by some that are very low priority; however, even in that case a better approach would be to use whitespace to separate groups. Another option is to insert a placeholder task to indicate some separation between task groups.
 
 See [the tasks for improving this spec & tooling](tasks.yml).
 
