@@ -50,7 +50,7 @@ Tools should allow users to accomplish the following:
       - `x` can mark a task done, if you want to keep it in the list.  (todotxt.org puts it on the front; if you do that, the recommendation is to move that line to the bottom of the file so that it doesn't get confusing in the middle of the rest of the list and throw off the alignment.  Use `x`, move your task to the bottom, or just do what I do and delete the thing... whatever works).
   - If you've gotten this far, it's about time to consider migrating to a full-blown DB.  The lists are getting very verbose and hard to read and manage, doncha think?
 - For sharing or juggling multiple task lists, start the file with URIs.
-  - This might not be a URL, and in such a case would need an external source to map to a location(s), eg. "Local Data" in [Distributed Task Lists](https://github.com/trentlarson/distributed-task-lists).
+  - This might not be a URL, and in such a case would need an external source to map to a location(s), eg. "Local Data" in [Distributed Task Lists](https://github.com/trentlarson/distrinet/tree/master/app/features/task-lists).
 
 Danger - colons `:` !
 
