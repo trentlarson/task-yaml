@@ -137,3 +137,48 @@ Inside a list, a specific priority number is not terribly useful and the order o
 
 See [the tasks for improving this spec & tooling](tasks.yml).
 
+#### Ideas for better spec & graphics
+
+![syntax](image/syntax-mermaid.svg)
+
+... from mermaid.js:
+
+```
+graph LR
+  subgraph Abox[priority number]
+    A[80]
+    A2[recommend same number of digits, eg. 10-99]
+  end
+  subgraph Aspbox[space]
+    Asp[&nbsp]
+    Asp2[&nbsp]
+  end
+  subgraph Bbox[estimate number]
+    B[0]
+    B2[recommend 1 digit for power of 2]
+  end
+  subgraph Bspbox[space]
+    Bsp[&nbsp]
+    Bsp2[&nbsp]
+  end
+  subgraph Cbox[description]
+    C["Plant grass in bare patch. #64;home +maintenance id:#grass-patch-3 due:2020-09-31"]
+    C2[free-form, with key:value properties and other codes from todotxt.org]
+  end
+  A --- Asp
+  Asp --- B
+  B --- Bsp
+  Bsp --- C
+  style Abox   fill:#fff
+  style Aspbox fill:#fff
+  style Bbox   fill:#fff
+  style Bspbox fill:#fff
+  style Cbox   fill:#fff
+  style A   fill:#fff,stroke:#000,stroke-width:4px
+  style Asp fill:#fff,stroke:#000,stroke-width:4px
+  style Asp2 fill:#fff
+  style B   fill:#fff,stroke:#000,stroke-width:4px
+  style Bsp fill:#fff,stroke:#000,stroke-width:4px
+  style Bsp2 fill:#fff
+  style C   fill:#fff,stroke:#000,stroke-width:4px
+```
