@@ -1,9 +1,9 @@
 # task-yaml
 
-This defines a standard for a concise task list for priorities and estimates.  The priorities are:
+This defines a standard for a concise task list for priorities and estimates.  The goals are:
 - Make it easy to create, read, and judge next actions with only a text editor.
-  - The priority is most important; this is typically impllicit in the order of the list, but some order could be helpful to show correlations across lists.
-  - The estimate is most important to visualize for quick assessment of available time, so if there is only one number then this is the number to show.
+  - The priority is most important. (This is implicit in the order of the list.)
+  - The estimate is next most important. (This is represented by an optional number at the start of the line.).
   - The descriptions should line up for quick browsing.
     - Next to the estimate, the context is the most likely resource constraint so that should come first in the description.
   - Child and dependent tasks should be clear.
@@ -16,32 +16,28 @@ Tools should allow users to accomplish the following:
 - incrementally migrate to a more (or less) expressive schema
 - migrate to a more (or less) feature-rich and/or UI-rich toolset
 
-## Specifications
+## Specifications (v 2)
 
 - Format in [YAML](https://yaml.org/).
 - Optionally, start the file with a "tasks:" line.  This is important when the file contains other info (eg. a "log").
 - Each task is in a list, with each line beginning with `-`.
-  - A priority number is first, but optional.
-    - The higher the number, the higher should be the priority.
-    - Lists often start without any organization, so this is optional.  If missing, it has a priority just below the previous task.  (The top task has top priority, which could be the length of the list or 99... it's currently unspecified.)
-  - An estimate number comes next.
+  - Each item has a priority just above the next in the list.
+  - An estimate number may come first.
+    - Any numeric value as the first item must be an estimate.
     - This is typically a number of hours.
       - The recommendation is to line these up by prefixing single-digit numbers with a "0" (if the range is 00-99). Sub-hour lengths are easy with decimals, so ".1" would be lowest visually appealing length; that's precisely 6 minutes... and if really care to distinguish between .1 and .3, more power to you.
     - Another decent approach is to use a power of 2 for number of hours, ie. 0 = 1 hour and 1 = 2 hours and 2 = 4 hours; note that 9 is basically 3 full-time months, too large to get a good estimate and should be broken down before being worked on. Smaller increments could be negative, ie. -1 = 30 mins and -2 = 15 minutes. But we recognize that most non-computer-scientists would find this hard to translate.
-    - This, too, is optional, but if there is only one number then it is the estimate.
+  - Labels like `<label>:<value>` add other data, eg. `created:2020-05-24`, `due:2020-05-31`, `repeats:monthly`, `id:implement-ids`, `assignee:did:peer:abc123`, `interested:did:sovrin:321cba`
+    - The `id` label is commonly used as a unique identifier for tasks. The value can be almost anything, but human-readable names are helpful. For example: `id:new-light-fixtures`
+    - The `ref` will refer to another task (even in another project).  It's best to put it as the only thing on that line, since all other details are loaded from the original task. Global references are of the format `ref:taskyaml:...#SOME-ID`; local references (inside the same file) are simpler, eg: `ref:#SOME-ID`
   - The description is all the rest of the line.
-  - That's enough to get started (and it covers the majority of my use cases).  How's that for a simple intro?
+  - That's enough to get started.  How's that for a simple intro?
   - Subtasks (ie. parts of the current task) are created with a nested list, where the parent task line ends with a `:` and the subtasks follow in an indented task list (yes, always a list).
-    - Alternatively, use a `subtasks` key with the value being the list of tasks (somtimes expressed as `id:OTHER-ID`).
-      - Under consideration: The `supertasks` key shows the reverse of the `subtasks` relationship.  Note that this should be a list.
-  - Dependent tasks are created with a `blocks` key.  (These are tasks that cannot begin until the current one is finished.)  Again, this is always a list.
-    - Under consideration: The `awaits` key shows the reverse of the `blocks` relationship.  (Yes, a list.)
-  - To refer to another task (even in another project), use the label `ref`.  It's best to put it as the only thing on that line, since all other details will be taken from the original task.
-  - You can add other markers from [Todo.txt](http://todotxt.org/).
-    - These features should be supported by task-yaml tools:
-      - `<label>:<value` adds other data, eg. `created:2020-05-24`, `due:2020-05-31`, `repeats:monthly`, `id:implement-ids`, `assignee:did:peer:abc123`, `interested:did:sovrin:321cba`
-        - The `id` label is commonly used as a unique identifier for tasks.
-          - Tools will expect that the value is a URI.  Global references are of the format `id:taskyaml:...#OTHER-ID`.  Local references are obviously simpler, like `id:OTHER-ID`; they are anything not parsable as a global reference, and shouldn't contain a `:` as part of the ID.
+    - Alternatively, use a `subtasks` label with the value being the list of tasks (somtimes expressed as `id:OTHER-ID`).
+      - Under consideration: The `supertasks` label shows the reverse of the `subtasks` relationship.  Note that this should be a list.
+  - Dependent tasks are created with a `blocks` label.  (These are tasks that cannot begin until the current one is finished.)  Again, this is always a list.
+    - Under consideration: The `awaits` label shows the reverse of the `blocks` relationship.  (Yes, a list.)
+  - Much like the `<label>:<value>` convention, you can add other markers from [Todo.txt](http://todotxt.org/).
      - Under consideration: `+` can mark a project/supertask, eg. `+home` or `+yard` or `+family-reunion`.
         - This should be treated as the ID for that parent task/project.  Tools may wish to show a project in the same list, together with the tasks, since a project is just a long-running task, eh.
         - in other words, this is a shortcut for `supertasks` (see above).
@@ -54,22 +50,22 @@ Tools should allow users to accomplish the following:
 
 Danger - colons `:` !
 
-- Don't ever put a space after `:`! (I tell myself that I always put a space before a colon if it's not `key:value` and that helps remind me that it's special.) Reason being that: if you ever have a colon followed by a space, YAML takes that as an object and it'll mess up the parsed results if the rest of your task isn't also formatted that way. It takes discipline and it's easy to forget! Here are the two cases where you can use it:
+- Don't ever put a space after `:`! (I tell myself that I always put a space before a colon if it's not `label:value`, and that helps remind me that it's special.) Reason being that: if you ever have a colon followed by a space, YAML takes that as an object and it'll mess up the parsed results if the rest of your task isn't also formatted that way. It takes discipline and it's easy to forget! Here are the two cases where you can use it:
   - Surrounded by other characters, like in labels (eg. `id:start-fire`).
   - At the very end of a task line, where the following lines are lists (eg. subtasks).  The recommendation is always to put a space before it in that case, eg ` :`; that helps solidify this rule in your mind that it's something special.
 
 Warning - numbers!
 
-- If a task description starts with a number, it could be parsed as an estimate. (I tell myself that I never start a task description with a number and I always spell them out, eg. "Two".)
+- If a task description starts with a number, it could be parsed as an estimate. (I tell myself that I like to spell out my numbers, eg. "Two", and that helps me check myself.)
 
 
 ## Example 1
 
 ```
-- 1 get groceries
-- 0 write to Aunt Kate
-- 0 +home laundry
-- 1 +home fix sprinklers
+- 2 get groceries
+- 1 write to Aunt Kate
+- 1 +home laundry
+- 2 +home fix sprinklers
 ```
 
 #### Explanation of Example 1
@@ -79,19 +75,22 @@ Warning - numbers!
 ## Example 2, with priorities and IDs and subtasks
 
 ```
-- 98 1 install helmet
-- 85 3 convert to UUIDs id:convert
-- 75 1 add install instructions to README.md id:uninstall
-- 80 0 install SSL:
-  - 77 0 save to publicly hosted git blocks:uninstall
+- .5 install helmet
+- 08 switch to UUIDs id:convert
+- 02 add install instructions to README.md id:install-docs
+- 01 install SSL :
+  - .5 save to publicly hosted git
+  blocks: ref:#install-docs
 ```
 
 #### Explanation of Example 2
 
-- Line 1 shows a task of priority 98 and estimation of 2 hours.
-- Line 2 shows a task with id `convert` of priority 85 and estimation of 8 hours.
-- The "install SSL" task has other tasks as part of it.
-  - Inside the subtask is a reference to the one with label `id` and value "uninstall".
+- Line 1 shows a task estimated at 1/2 hour.
+- Line 2 shows a task with id `convert` estimated at 8 hours.
+- Line 3 shows a task with id `install-docs`.
+- The "install SSL" task is linked to other tasks:
+  - The "save" task is a subtask estimated at 30 minutes.
+  - The referred task is a dependent task, meaning that this should happen before the `install-docs` item.
 
 ## Example 3, under consideration: shortcuts for globally unique references
 
@@ -132,8 +131,6 @@ http://todotxt.org/ (... [introducted by the founder of LifeHacker in 2006](http
 - One thing todotxt.org got wrong is putting too much variability on the front, so it's tougher to quickly parse out the description.  They also don't put the size of the task front-and-center, so it's harder to see relative sizes of tasks (though they've got a good point that the next item on each project should always be a small task).
 
 ## Miscellany
-
-Inside a list, a specific priority number is not terribly useful and the order of tasks works well. Numbers might be useful to indicate a grouping, for example if there are a few very high priority issues followed by some that are very low priority; however, even in that case a better approach would be to use whitespace to separate groups. Another option is to insert a placeholder task to indicate some separation between task groups.
 
 See [the tasks for improving this spec & tooling](tasks.yml).
 
