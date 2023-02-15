@@ -48,16 +48,21 @@ Tools should allow users to accomplish the following:
 - For sharing or juggling multiple task lists, start the file with URIs.
   - This might not be a URL, and in such a case would need an external source to map to a location(s), eg. "Local Data" in [Distributed Task Lists](https://github.com/trentlarson/distrinet/tree/master/app/features/task-lists).
 
-Danger - colons `:` !
+Danger - beware colons `:`!
 
-- Don't ever put a space after `:`! (I tell myself that I always put a space before a colon if it's not `label:value`, and that helps remind me that it's special.) Reason being that: if you ever have a colon followed by a space, YAML takes that as an object and it'll mess up the parsed results if the rest of your task isn't also formatted that way. It takes discipline and it's easy to forget! Here are the two cases where you can use it:
+- Don't put a space after `:`! (I tell myself that I always put a space before a colon if it's not `label:value`, and that helps remind me that it's special.) Reason being that: if you ever have a colon followed by a space, YAML takes that as an object and it'll mess up the parsed results if the rest of your task isn't also formatted that way. It takes discipline and it's easy to forget! Here are the two cases where you can safely use it:
   - Surrounded by other characters, like in labels (eg. `id:start-fire`).
   - At the very end of a task line, where the following lines are lists (eg. subtasks).  The recommendation is always to put a space before it in that case, eg ` :`; that helps solidify this rule in your mind that it's something special.
 
-Warning - numbers!
+Danger - avoid hashes `#`' !
+
+- Hash symbols mark comments, so everything to the end of the line would be ignored.
+
+Warning - no numbers first
 
 - If a task description starts with a number, it could be parsed as an estimate. (I tell myself that I like to spell out my numbers, eg. "Two", and that helps me check myself.)
 
+[Here is a good online tool to test your YAML](https://onlineyamltools.com/validate-yaml), and [here is one to check the JSON output](https://onlineyamltools.com/convert-yaml-to-json).
 
 ## Example 1
 
