@@ -103,8 +103,8 @@ Note that this part is experimental: some parsers fail to parse tags as shown.
 
 ```
 %TAG ! tag:taskyaml.org,2020:schema
-%TAG !council! tag:9d9bc93b-01f3-4efd-b003-36ec53f33d3b.prosperity-council,2020:/tasks.yml
---- !<tag:ee461452-d91c-42ff-9651-19a35e385037.trent.prosperity-todo,2020:/tasks.yml>
+%TAG !council! tag:9d9bc93b-01f3-4efd-b003-36ec53f33d3b.prosperity-council,2020:/tasks.yaml
+--- !<tag:ee461452-d91c-42ff-9651-19a35e385037.trent.prosperity-todo,2020:/tasks.yaml>
 - 98 1 install helmet
 - 75 1 add install instructions to README.md id:instruction
 - 90 0 install SSL:
@@ -137,5 +137,5 @@ http://todotxt.org/ (... [introducted by the founder of LifeHacker in 2006](http
 
 ## Miscellany
 
-See [the tasks for improving this spec & tooling](tasks.yml).
+See [the tasks for improving this spec & tooling](tasks.yaml).
 
