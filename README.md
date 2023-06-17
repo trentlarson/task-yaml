@@ -1,4 +1,4 @@
-# task-yaml
+# Task YAML
 
 This defines a standard for a concise task list for priorities and estimates.  The goals are:
 - Make it easy to create, read, and judge next actions with only a text editor.
@@ -127,6 +127,12 @@ See [an example from the spec here](https://yaml.org/spec/1.2/spec.html#id276180
 - The "install SSL" contains a list of tasks it "blocks" as well as the "sub" tasks inside it.
 - The last task is marked with the tag of `!council!` to show that it's part of the set of tasks from the `%TAG !council` line, and it's found with an ID of "publicize" in that set.
 
+## Tooling &c
+
+[This page at ObservableHQ](https://observablehq.com/d/83a90a6d6cd11999) can be used to visualize a project in Task YAML.
+
+See [the tasks for improving this spec & tooling](tasks.yaml).
+
 ## Related Projects
 
 http://todotxt.org/ (... [introducted by the founder of LifeHacker in 2006](https://lifehacker.com/geek-to-live-list-your-life-in-txt-166299) and [defended](https://lifehacker.com/why-i-get-more-done-with-a-plain-text-to-do-list-5743081) and [summarized simply](https://www.howtogeek.com/355890/every-to-do-list-app-sucks-switch-to-todo.txt-instead/) by others since then... yep, there's quite the rabbit-hole here)
@@ -134,8 +140,3 @@ http://todotxt.org/ (... [introducted by the founder of LifeHacker in 2006](http
 - While this is great for personal lists, I want a couple more features to enable sharing with others and do some advanced calculations such as aggregate estimations; task-yaml is more project-centric from the start.
 
 - One thing todotxt.org got wrong is putting too much variability on the front, so it's tougher to quickly parse out the description.  They also don't put the size of the task front-and-center, so it's harder to see relative sizes of tasks (though they've got a good point that the next item on each project should always be a small task).
-
-## Miscellany
-
-See [the tasks for improving this spec & tooling](tasks.yaml).
-

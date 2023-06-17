@@ -5,8 +5,10 @@
 - .5 Look into tasks in GitHub Flavored Markdown
 - .5 Refactor someone else's task lists, eg Escape Surveillance Capitalism
 
-- 04 parse & model tooling:
-  - 16 show graphical dependencies
+- Make the ObservableHQ renderings more useful :
+  - 01 Figure out why nested-nested "awaits" doesn't render precedent correctly, eg. minimal-lifestyle-events in https://raw.githubusercontent.com/trentlarson/lives-of-gifts/master/project.task.yaml
+  - .5 Figure out why a change to Lives of Gifts task list doesn't show immedately on a reload of the observablehq site
+
 - 04 add assignments (related to related-id:calc-time )
 - 04 add team assignments (related to related-id:calc-time )
 - 16 calculate time before finishing, a la https://github.com/trentlarson/Schedule-Forecast id:calc-time
