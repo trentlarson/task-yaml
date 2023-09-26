@@ -21,7 +21,8 @@ Tools should allow users to accomplish the following:
 - Format in [YAML](https://yaml.org/).
 - Optionally, start the file with a "tasks:" line.  This is important when the file contains other info (eg. a "log").
 - Each task is in a list, with each line beginning with `-`.
-  - Each item has a priority just above the next in the list.
+  - Each item implicitly has a priority just above the ones following it in the list.
+    - One way to indicate that some items are vastly lower in priority is to use multiple empty lines, separating blocks of tasks.
   - An estimate number may come first.
     - Any numeric value as the first item must be an estimate.
     - This is typically a number of hours.
@@ -105,17 +106,17 @@ Note that this part is experimental: some parsers fail to parse tags as shown.
 %TAG ! tag:taskyaml.org,2020:schema
 %TAG !council! tag:9d9bc93b-01f3-4efd-b003-36ec53f33d3b.prosperity-council,2020:/tasks.yaml
 --- !<tag:ee461452-d91c-42ff-9651-19a35e385037.trent.prosperity-todo,2020:/tasks.yaml>
-- 98 1 install helmet
-- 75 1 add install instructions to README.md id:instruction
-- 90 0 install SSL:
+- 1 install helmet
+- 1 add install instructions to README.md id:instruction
+- 0 install SSL:
   blocks:
-    - 77 0 save to publicly hosted git
+    - 0 save to publicly hosted git
   sub:
-    - 80 2 install haproxy
-- 85 3 convert to UUIDs
-- 80 1 create a link to the specific claim
+    - 2 install haproxy
+- 3 convert to UUIDs
+- 1 create a link to the specific claim
 - id:!council!#publicize:
-  - 70 2 reserve a domain
+  - 2 reserve a domain
 ```
 
 #### Explanation of Example 3
